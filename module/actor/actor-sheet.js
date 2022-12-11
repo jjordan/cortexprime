@@ -79,6 +79,67 @@ export class CortexPrimeActorSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
+  async _onDragStart(event) {
+    console.log("in _onDragStart()");
+  }
+
+  async _onDrop(event) {
+    console.log("in _onDrop with event: %o", event);
+
+    // try to extract the data
+    let data
+    try {
+      data = JSON.parse(event.dataTransfer.getData('text/plain'));
+    } catch (err) {
+      console.log("Got error fetching dragdrop data: %o", err)
+      return false;
+    }
+    const actor = this.actor;
+
+    // handle the drop with a Hooked function
+    const allowed = Hooks.call("dropActorSheetData", actor, this, data);
+    if (allowed === false) return;
+
+    // handle different types
+    switch (data.type) {
+      case "ActiveEffect":
+        console.log("dropped ActiveEffect");
+        break;
+      case "Actor":
+        console.log("dropped Actor");
+        break;
+      case "Item":
+        console.log("dropped Item");
+        this._onDropItem(event, data);
+        break;
+      case "Folder":
+        console.log("dropped Folder");
+        break;
+    }
+    console.log("Got data: %o", data);
+  }
+
+  async _onDropItem(event, data) {
+    console.log("in _onDropItem")
+    if (!this.actor.isOwner) return false;
+
+    const item = await Item.implementation.fromDropData(data);
+    const itemData = item.toObject();
+    console.log("Have itemData: %o", itemData);
+    // Handle item sorting within the same actor
+    const actor = this.actor;
+    let sameActor = (data.actorId === actor.id) || (actor.isToken && (data.tokenId === actor.token.id));
+    if (sameActor) return this._onSortItem(event, itemData);
+
+    console.log("About to create a dropped owned item");
+    // create the owned item
+    return this._onDropItemCreate(itemData);
+  }
+
+  async _onDropItemCreate(itemData) {
+    console.log("in _onDropItemCreate with itemData: %o", itemData);
+    return false;
+  }
 
   async _actorTypeConfirm (event) {
     event.preventDefault()
