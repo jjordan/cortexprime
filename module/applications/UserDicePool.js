@@ -26,7 +26,7 @@ export class UserDicePool extends FormApplication {
     return mergeObject(super.defaultOptions, {
       id: 'user-dice-pool',
       template: 'systems/cortexprime/templates/dice-pool.html',
-      title: localizer('DicePool'),
+      title: localizer('Dice Pool'),
       classes: ['cortexprime', 'user-dice-pool'],
       width: 600,
       height: 'auto',

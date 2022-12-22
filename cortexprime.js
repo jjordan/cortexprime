@@ -5,6 +5,7 @@ import { preloadHandlebarsTemplates } from './module/handlebars/preloadTemplates
 import { registerHandlebarHelpers } from './module/handlebars/helpers.js'
 import { registerSettings } from './module/settings/settings.js'
 import { CortexPrimeActorSheet } from './module/actor/actor-sheet.js'
+import { CortexPrimeItemSheet } from './module/item/item-sheet.js'
 import cortexPrimeHooks from './module/cortexPrimeHooks.js'
 
 Hooks.once('init', () => {
@@ -24,6 +25,8 @@ Hooks.once('init', () => {
 
   Actors.unregisterSheet("core", ActorSheet)
   Actors.registerSheet("cortexprime", CortexPrimeActorSheet, { makeDefault: true })
-
+  Items.unregisterSheet("core", ItemSheet)
+  Items.registerSheet("cortexprime", CortexPrimeItemSheet, { makeDefault: true })
+  console.log("got to here in init");
   cortexPrimeHooks()
 })
